@@ -1,0 +1,465 @@
+MyScreenManager:
+
+    id: screen_manager
+    # Définition de l'objet Screen associé au nom "main"
+    MainScreen:
+        name: "main"
+        GridLayout:
+            cols:1
+            background_color:(0,0,1,1)
+            padding:[20,20,20,20]
+           
+            Label:
+                background_color: (0,1,1,1)
+                text:"Bonjour, veuillez vous identifier."
+                color : (0,0,0,1)
+
+            Label:
+                text:"Identifiant"
+                color : (0,0,0,1)
+
+            TextInput:
+                multiline:False
+                id: login
+
+
+            Label:
+                text:"Mot de passe"
+                color : (0,0,0,1)
+                size: self.texture_size
+                texte_size: root.width, None
+
+            TextInput:
+                id:passw
+                multiline:False
+
+            Button:
+                text:"Connexion"
+                color : (0,0,0,1)
+                background_normal:""
+                background_color: (194/255,194/255,194/255,1)
+
+                on_release:
+                    app.root.login()
+                    root.transition.direction = "left"
+     
+
+
+    # Définition de l'objet Screen associé au nom "second"
+    SecondScreen:
+        name: "second"
+
+        GridLayout:
+            cols:1
+            padding:[20,20,20,20]
+
+
+            GridLayout:
+                cols: 1
+
+                Label:
+                    text: "Bienvenue sur l'application dédiée aux administrateurs !"
+                    color : (0,0,0,1)
+
+                Label:
+                    text: "Que voulez-vous faire ?"
+                    color : (0,0,0,1)
+
+                Button:
+                    text: "Rechercher un étudiant"
+                    on_release:
+                        app.root.current = "third" 
+                        root.transition.direction = "left"
+                Button:
+                    text: "Ajouter un étudiant"
+                    on_release:
+                        app.root.current = "fouth" 
+                        root.transition.direction = "left"
+                Button:
+                    text: "Ajouter une note"
+                    on_release:
+                        root.fill_dropdown()
+                        app.root.current = "tenth" 
+                        root.transition.direction = "left"
+                Button:
+                    text: "Aide et retour"
+                    on_release:
+                        app.root.current = "fifth" 
+                        root.transition.direction = "left"
+            Button:
+                text:"Me déconnecter"
+                size_hint: 1, 0.3
+                on_release:
+                    app.root.current = "main" 
+                    root.transition.direction = "right"
+
+    ThirdScreen:
+        name: "third"
+        GridLayout:
+            cols:1
+            padding:[20,20,20,20]
+
+            GridLayout:
+            
+                size: root.width,root.height
+
+                cols:1
+                Label:
+                    text:"Ici, vous pouvez rechercher un étudiant."
+                    color : (0,0,0,1)
+
+                GridLayout:
+                    cols:1
+                    TextInput:
+                        size_hint: 1, 0.3
+                        id: query
+                        hint_text:"Recherche (Vide pour afficher tous les etudiants)"
+                Button:
+                    size_hint: 1, 0.3
+                    text:"Rechercher"
+                    on_release: app.root.search()
+
+                GridLayout:
+                    cols:2
+                    ScrollView:
+                        do_scroll_x: False
+				        do_scroll_y: True
+                        Label:
+                            id: sortFilesDisplay
+                            size_hint: None, None     # <<<<<<<<<<
+                            size: self.texture_size   # <<<<<<<<<<
+                            text: 
+                            id : resultat_recherche
+                            color : (0,0,0,1)
+                            pos: self.pos
+
+                    ScrollView:  
+                        BoxLayout:
+                            height: self.minimum_height
+                            id: resultat_recherche_image
+                            orientation: 'vertical'
+
+            Button:
+                size_hint: 1, 0.3
+                size: dp(80), dp(80)
+                text: "Retour au menu principal"
+                on_release:
+                    app.root.current = "second"
+                    root.transition.direction = "right"
+
+    FourthScreen:
+        name: "fouth"
+        GridLayout:
+            padding:[20,20,20,20]
+
+            cols:1
+            GridLayout:
+                cols:1
+                Label:
+                    text:"Ici, vous pouvez ajouter un étudiant à la base de données."
+                    id: add_student
+                    color : (0,0,0,1)
+
+                GridLayout:
+                    cols:4
+                    TextInput:
+                        hint_text:"Nom"
+                        id: nom
+                    TextInput:
+                        hint_text:"Prénom"
+                        id: prenom
+                    TextInput:
+                        hint_text:"Moyenne"
+                        id: moyenne
+                    Spinner:
+                        text:"Cursus"
+                        id: cursus
+                        values: ["1A", "2A", "3A"]
+                        on_text: root.spinner_clicked(cursus.text) 
+
+                GridLayout:
+                    cols: 2
+                    Button:
+                        text:"Ajouter une image"
+                        on_press: root.select_file()
+                    Image:
+                        id:apercu
+                        source: ""
+                        size: root.size
+
+
+            Label:
+                text:""
+                
+            Button:
+                text:"Ajouter l'étudiant"
+                on_release: app.root.add_student()
+            Button:
+                text: "Retour au menu principal"
+                size_hint: 1, 0.3
+
+                on_release:
+                    app.root.current = "second"
+                    root.transition.direction = "right"
+    
+    FifthScreen:
+        name: "fifth"
+        GridLayout:
+            padding:[20,20,20,20]
+
+            cols:1
+            Label:
+                text:"Page d'aide"
+                color : (0,0,0,1)
+
+        
+            Label:
+                text:"Bienvenue sur la page d'aide, ici vous \n pouvez envoyer un message, une réclamation \n diractement à l'équipe technique qui  \n vous répondront dans les plus brefs délais. Merci \n d'être le plus précis dans votre message \n pour que nous puissions réponde aux mieux à vos \n besoins."
+                color : (0,0,0,1)
+                size: root.size
+
+            GridLayout:
+                cols:3
+                TextInput:
+                    hint_text:"Nom"
+                    id: nommail
+                TextInput:
+                    hint_text:"Prenom"
+                    id: prenommail
+                TextInput:
+                    hint_text:"Adresse mail de contact"
+                    id: emailkv
+            TextInput:
+                hint_text:"Message"
+                id: messagekv
+            Button:
+                text:"Envoyer ma réclamation"
+                on_release: app.root.add_student()
+            Button:
+                text: "Retour au menu principal"
+                size_hint: 1, 0.3
+                on_release:
+                    app.root.current = "second"
+                    root.transition.direction = "right"
+    SixthScreen:
+        name: "sixth"
+        GridLayout:
+            cols:1
+            padding:[20,20,20,20]
+
+
+            GridLayout:
+                cols: 1
+
+                Label:
+                    text: "Bienvenue sur l'application étudiante !"
+                    color : (0,0,0,1)
+                    size_hint: 1, 0.1
+
+                Label:
+                    text: "Que voulez-vous faire ?"
+                    color : (0,0,0,1)
+
+                Button:
+                    text: "Rechercher un étudiant"
+                    on_release:
+                        app.root.current = "seventh" 
+                        root.transition.direction = "left"
+                Button:
+                    text: "Afficher les dernières notes"
+                    on_release:
+                        app.root.current = "eigthth" 
+                        root.transition.direction = "left"
+                
+                Button:
+                    text: "Aide et retour"
+                    on_release:
+                        app.root.current = "nineth" 
+                        root.transition.direction = "left"
+            Button:
+                text:"Me déconnecter"
+                size_hint: 1, 0.3
+                on_release:
+                    app.root.current = "main" 
+                    root.transition.direction = "right"
+    SeventhScreen:
+        name: "seventh"
+        GridLayout:
+            cols:1
+            padding:[20,20,20,20]
+
+            GridLayout:
+            
+                size: root.width,root.height
+
+                cols:1
+                Label:
+                    text:"Ici, vous pouvez rechercher un étudiant."
+                    color : (0,0,0,1)
+
+                GridLayout:
+                    cols:1
+                    TextInput:
+                        size_hint: 1, 0.3
+                        id: query_etu
+                        hint_text:"Recherche (Vide pour afficher tous les etudiants)"
+                Button:
+                    size_hint: 1, 0.3
+                    text:"Rechercher"
+                    on_release: app.root.search2()
+
+                GridLayout:
+                    cols:2
+                    ScrollView:
+                        do_scroll_x: False
+				        do_scroll_y: True
+                        Label:
+                            id: sortFilesDisplay
+                            size_hint: None, None     # <<<<<<<<<<
+                            size: self.texture_size   # <<<<<<<<<<
+                            text: 
+                            id : resultat_recherche_etu
+                            color : (0,0,0,1)
+                            pos: self.pos
+
+                    ScrollView:  
+                        BoxLayout:
+                            height: self.minimum_height
+                            id: resultat_recherche_image_etu
+                            orientation: 'vertical'
+            Button:
+                size_hint: 1, 0.3
+                size: dp(80), dp(80)
+                text: "Retour au menu principal"
+                on_release:
+                    app.root.current = "sixth"
+                    root.transition.direction = "right"
+    EighththScreen:
+        name: "eigthth"
+        GridLayout:
+            cols:1
+            padding:[20,20,20,20]
+
+            GridLayout:
+            
+                size: root.width,root.height
+
+                cols:1
+                Label:
+                    text:"Ici, vous pouvez rechercher une note (vide pour afficher toutes les notes)"
+                    color : (0,0,0,1)
+
+                GridLayout:
+                    cols:1
+                    TextInput:
+                        size_hint: 1, 0.3
+                        id: query_marks
+                        hint_text:"Recherche"
+                Button:
+                    size_hint: 1, 0.3
+                    text:"Rechercher"
+                    on_release: app.root.search_marks()
+
+                GridLayout:
+                    cols:2
+                    ScrollView:
+                        do_scroll_x: False
+				        do_scroll_y: True
+                        Label:
+                            id: notes_res
+                            size_hint: None, None     # <<<<<<<<<<
+                            size: self.texture_size   # <<<<<<<<<<
+                            text:
+                            color : (0,0,0,1)
+                            pos: self.pos
+
+            Button:
+                size_hint: 1, 0.3
+                size: dp(80), dp(80)
+                text: "Retour au menu principal"
+                on_release:
+                    app.root.current = "sixth"
+                    root.transition.direction = "right"
+
+   
+    NinethScreen:
+        name: "nineth"
+        GridLayout:
+            padding:[20,20,20,20]
+
+            cols:1
+            Label:
+                text:"Page d'aide"
+                color : (0,0,0,1)
+
+        
+            Label:
+                text:"Bienvenue sur la page d'aide, ici vous \n pouvez envoyer un message, une réclamation \n diractement à l'équipe technique qui  \n vous répondront dans les plus brefs délais. Merci \n d'être le plus précis dans votre message \n pour que nous puissions réponde aux mieux à vos \n besoins."
+                color : (0,0,0,1)
+                size: root.size
+
+            GridLayout:
+                cols:3
+                TextInput:
+                    hint_text:"Nom"
+                    id: nommail
+                TextInput:
+                    hint_text:"Prenom"
+                    id: prenommail
+                TextInput:
+                    hint_text:"Adresse mail de contact"
+                    id: emailkv
+            TextInput:
+                hint_text:"Message"
+                id: messagekv
+            Button:
+                text:"Envoyer ma réclamation"
+                on_release: app.root.add_student()
+            Button:
+                text: "Retour au menu principal"
+                size_hint: 1, 0.3
+                on_release:
+                    app.root.current = "sixth"
+                    root.transition.direction = "right"
+    TenthScreen:
+        name: "tenth"
+        GridLayout:
+            padding:[20,20,20,20]
+
+            cols:1
+            GridLayout:
+                cols:1
+                Label:
+                    text:"Ici, vous pouvez ajouter une note à la base de données."
+                    id: add_mark
+                    color : (0,0,0,1)
+
+                GridLayout:
+                    cols:3
+                    Spinner:
+                        text:"Etudiant"
+                        id: nomnote
+                        values: 
+                        on_text: root.spinner_clicked(cursus.text) 
+                    Spinner:
+                        text:"Matière"
+                        id: matierenote
+                        values: 
+                        on_text: root.spinner_clicked(cursus.text) 
+                GridLayout:
+                    cols:2
+                    TextInput:
+                        hint_text:"Note"
+                        id: note
+                    Button:
+                        size_hint: 1, 0.3
+                        text:"Ajouter la note"
+                        on_release: app.root.add_mark()
+
+            Button:
+                text: "Retour au menu principal"
+                size_hint: 1, 0.3
+
+                on_release:
+                    app.root.current = "second"
+                    root.transition.direction = "right"
